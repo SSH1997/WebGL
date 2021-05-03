@@ -1,1 +1,3 @@
-alert(3);
+import webGL from "@/config";
+
+webGL();

@@ -30,7 +30,6 @@ export const createShaderProgram = (
   fragmentShader: WebGLShader
 ) => {
   const shaderProgram = gl.createProgram();
-  gl.createProgram();
   gl.attachShader(shaderProgram, vertexShader);
   gl.attachShader(shaderProgram, fragmentShader);
   gl.linkProgram(shaderProgram);
@@ -72,9 +71,21 @@ export const createBuffer = (
   return buffer;
 };
 
+export interface ProgramInfo {
+  program: WebGLProgram;
+  attribLocations: {
+    vertexPosition: number;
+    vertexColor: number;
+  };
+  uniformLocations: {
+    projectionMatrix: WebGLUniformLocation;
+    modelViewMatrix: WebGLUniformLocation;
+  };
+}
+
 export const initScene = (
   gl: WebGLRenderingContext,
-  programInfo: any,
+  { program, attribLocations, uniformLocations }: ProgramInfo,
   positionBuffer: WebGLBuffer,
   colorBuffer: WebGLBuffer,
   indexBuffer: WebGLBuffer
@@ -106,14 +117,14 @@ export const initScene = (
     const offset = 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.vertexAttribPointer(
-      programInfo.attribLocations.vertexPosition,
+      attribLocations.vertexPosition,
       numComponents,
       type,
       normalize,
       stride,
       offset
     );
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+    gl.enableVertexAttribArray(attribLocations.vertexPosition);
   }
 
   {
@@ -124,31 +135,27 @@ export const initScene = (
     const offset = 0;
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.vertexAttribPointer(
-      programInfo.attribLocations.vertexColor,
+      attribLocations.vertexColor,
       numComponents,
       type,
       normalize,
       stride,
       offset
     );
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
+    gl.enableVertexAttribArray(attribLocations.vertexColor);
   }
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-  gl.useProgram(programInfo.program);
+  gl.useProgram(program);
 
   gl.uniformMatrix4fv(
-    programInfo.uniformLocations.projectionMatrix,
+    uniformLocations.projectionMatrix,
     false,
     projectionMatrix
   );
 
-  gl.uniformMatrix4fv(
-    programInfo.uniformLocations.modelViewMatrix,
-    false,
-    modelViewMatrix
-  );
+  gl.uniformMatrix4fv(uniformLocations.modelViewMatrix, false, modelViewMatrix);
 
   {
     const vertexCount = 36;

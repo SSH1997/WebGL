@@ -1,5 +1,5 @@
-import { vertexShaderSource } from "@/shaderSource/vertexShader";
-import { fragmentShaderSource } from "@/shaderSource/fragmentShader";
+import { vertexShaderSource } from "./shaderSource/vertexShader";
+import { fragmentShaderSource } from "./shaderSource/fragmentShader";
 import {
   createShader,
   createShaderProgram,
